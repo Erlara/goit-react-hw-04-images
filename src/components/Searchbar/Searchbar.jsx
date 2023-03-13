@@ -1,49 +1,45 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import { Button, Input, Label, SearchForm, Header } from './Searchbar.styled';
 import { toast } from 'react-toastify';
 import { ImSearch } from 'react-icons/im';
 import PropTypes from 'prop-types';
 
-export class Searchbar extends Component {
-  state = {
-    value: '',
+export function Searchbar({ onSearch }) {
+  const [value, setValue] = useState('');
+
+  const handleChange = e => {
+    setValue(e.target.value);
   };
 
-  handleChange = ({ target: { value } }) => {
-    this.setState({ value });
-  };
-
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
 
-    if (this.state.value.trim() === '') {
+    if (value.trim() === '') {
       toast('Please, enter a query to search!');
       return;
     }
-    this.props.onSearch(this.state.value);
-    this.setState({ value: '' });
+    onSearch(value);
+    setValue('');
   };
 
-  render() {
-    return (
-      <Header>
-        <SearchForm onSubmit={this.handleSubmit}>
-          <Button type="submit">
-            <ImSearch />
-            <Label>Search</Label>
-          </Button>
+  return (
+    <Header>
+      <SearchForm onSubmit={handleSubmit}>
+        <Button type="submit">
+          <ImSearch />
+          <Label>Search</Label>
+        </Button>
 
-          <Input
-            type="text"
-            autocomplete="off"
-            placeholder="Search images and photos"
-            value={this.state.value}
-            onChange={this.handleChange}
-          />
-        </SearchForm>
-      </Header>
-    );
-  }
+        <Input
+          type="text"
+          autocomplete="off"
+          placeholder="Search images and photos"
+          value={value}
+          onChange={handleChange}
+        />
+      </SearchForm>
+    </Header>
+  );
 }
 
 Searchbar.propTypes = {
